@@ -1,12 +1,12 @@
 #!/bin/bash
 
-[ -p foobar ] && rm foobar
+[ -p foobar.wl ] && rm foobar.wl
 
-trap "[ -p foobar ] && rm foobar && exit" SIGINT
+trap "[ -p foobar.wl ] && rm foobar.wl && exit" SIGINT
 
 while [  true ]; do
-  mkfifo foobar
+  mkfifo foobar.wl
   echo "Writing File"
-  cat file1 file2 > foobar
-  rm foobar
+  cat file1.txt file2.txt > foobar
+  rm foobar.wl
 done
