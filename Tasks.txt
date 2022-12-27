@@ -1,0 +1,4 @@
+Questions:
+- Are a file being served from RAM? This would be a chaos when serving multiple files
+- How to react when a .wl file is deleted?
+- What when a file with the same name.extension (but without the .wl) is created?
