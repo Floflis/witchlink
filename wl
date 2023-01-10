@@ -3,7 +3,7 @@
 file_name="file3"
 file_ext="txt"
 
-[ -p file3.txt.wl ] && rm file3.txt.wl
+[ -p $file_name.$file_ext.wl ] && rm $file_name.$file_ext.wl
 
 trap "[ -p $file_name.$file_ext.wl ] && rm $file_name.$file_ext.wl && exit" SIGINT
 
