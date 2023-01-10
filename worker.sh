@@ -1,7 +1,8 @@
 #!/bin/bash -e
 
 file_fullname="file3.txt"
-file_name="file3"
+file_name="${file_fullname%.*}"
+#from https://stackoverflow.com/a/965072/5623661
 file_ext="${file_fullname##*.}"
 
 [ -p $file_name.$file_ext.wl ] && rm $file_name.$file_ext.wl && rm $file_name.$file_ext
