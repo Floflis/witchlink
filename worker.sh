@@ -1,7 +1,8 @@
 #!/bin/bash -e
 
+file_fullname="file3.txt"
 file_name="file3"
-file_ext="txt"
+file_ext="${file_fullname##*.}"
 
 [ -p $file_name.$file_ext.wl ] && rm $file_name.$file_ext.wl && rm $file_name.$file_ext
 
