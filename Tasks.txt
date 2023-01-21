@@ -1,3 +1,5 @@
+witchlink support symlinking inside files, such as a .svg
+
 Questions:
 - Are a file being served from RAM? This would be a chaos when serving multiple files
 - How to react when a .wl file is deleted?
