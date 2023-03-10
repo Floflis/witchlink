@@ -1,3 +1,5 @@
+"ln" wrapper. watch for symlink's src for moving, then when triggered update symlink's src (also watch the symlink)
+
 witchlink support symlinking inside files, such as a .svg
 
 Questions:
