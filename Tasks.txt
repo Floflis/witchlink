@@ -1,4 +1,4 @@
-"ln" wrapper. watch for symlink's src for moving, then when triggered update symlink's src (also watch the symlink)
+"ln" wrapper. watch for symlink's src for moving, then when triggered update symlink's src (also watch the symlink). or better: when creating a symlink in a folder, place in the original file its symlinkers, so symlinkers can be updated when this original file is moved
 
 witchlink support symlinking inside files, such as a .svg
 
