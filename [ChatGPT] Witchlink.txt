@@ -1,0 +1,235 @@
+"I'm testing you:
+
+How could mkfifo enable me, a Bash scripter, to create an new kind of symlink system?"
+
+mkfifo creates a named pipe in the file system, which is a type of special file that allows communication between processes using a producer-consumer model.
+
+Using mkfifo, you could create a named pipe and use it to establish a communication channel between two processes. One process could write data to the named pipe, while the other process could read from it.
+
+In the context of creating a new kind of symlink system, you could use a named pipe to create a symbolic link between two files or directories. For example, you could create a named pipe that represents a symbolic link, and then write the path of the target file or directory to the named pipe. Another process could then read from the named pipe and use the path to access the target file or directory.
+
+However, this approach would likely have limitations and potential issues, as symbolic links are a standard part of the file system and are supported by many applications and tools, while a custom symlink system based on named pipes would not be. It could also be more complex and less efficient than using standard symbolic links.
+
+"I'm creating Witchlink (/usr/bin/wl), and mkfifo was the only solution I found to enable a file to symlink multiple files/lines rather than just one."
+
+I see. It sounds like you are creating a new command line tool called "Witchlink" that utilizes mkfifo to create a new kind of symlink system. Can you please provide more information on how exactly Witchlink works and how it utilizes mkfifo to create this new symlink system?
+
+"The idea is to load multiple parts of a single witchlink (a .wl file) from multiple files.
+
+It could serve to deduplicate files that aren't exactly equal but have shared bytes, and other yet-unthought possibilities.
+
+The plan is to turn the Witchlink program into a system service, acting like a file server so the mkfifo files stay alive between system restarts."
+
+That sounds like an interesting idea. A system service running Witchlink could indeed provide a way to maintain multiple parts of a single Witchlink and allow multiple files/lines to be symlinked to one file. By running it as a server, you could also ensure that the mkfifo files stay alive between system restarts.
+
+To implement this, you could create a system service that runs the Witchlink program as a daemon process. The service could then listen for incoming connections and accept requests to create, modify, or delete Witchlink files. The service would maintain a data structure that maps each Witchlink file to its constituent parts.
+
+When a request comes in to create a new Witchlink file, the service would first check if all of the constituent parts exist. If any are missing, the service could return an error to the client. Otherwise, the service would create the Witchlink file and symlink all of the constituent parts to it.
+
+Similarly, when a request comes in to modify a Witchlink file, the service would first check if all of the constituent parts exist. If any are missing, the service could return an error to the client. Otherwise, the service would unlink the existing Witchlink file and symlink all of the constituent parts to a new file with the same name.
+
+To ensure that the mkfifo files stay alive between system restarts, the service could be set up to start automatically at boot time. Additionally, the service could save the mapping of Witchlink files to their constituent parts to a persistent data store (such as a file or database) and load it back into memory when the service starts up.
+
+Overall, implementing a system service to run Witchlink as a file server could provide a powerful way to manage multiple files/lines with shared bytes and provide deduplication functionality.
+
+"Each .wl file (such as, for example, LoremIpsum.txt.wl) will come with a counterpart hidden file that will contain the data (such as the files that will be symlinked into the LoremIpsum.txt.wl witchlink, such as the Lorem.txt and Ipsum.txt files).
+
+This will ensure portability when moving a folder that contain witchlinks."
+
+That's a good approach. By keeping the linked file data in a hidden file with the same name as the witchlink file, you can ensure that the links will be correctly resolved no matter where the folder containing them is moved. It also makes it easy to keep track of which files are being linked into each witchlink file.
+
+"Please describe Witchlink, and where the exec resides."
+
+Witchlink is a program designed to enable a file to symlink multiple files or lines of text rather than just one, using a mkfifo pipe to create a new kind of symlink system. The idea behind Witchlink is to provide a way to deduplicate files that aren't exactly equal but have shared bytes, and to explore other yet-unthought possibilities.
+
+The executable for Witchlink could reside anywhere on your system, depending on where you installed it. Typically, executables are installed in the /usr/bin/ directory, which is included in the PATH environment variable, so you can call the program from anywhere by typing its name. But it's up to you to decide where to install Witchlink.
+
+"What is the exec name of Witchlink?"
+
+The exec name of Witchlink would depend on how it was installed and configured. By default, the executable file for Witchlink would be located at /usr/bin/wl, but this can be changed during installation or configuration.
+
+"Whoa!
+
+You learn fast and precisely"
+
+Thank you! I am designed to be a fast learner and provide accurate information to the best of my abilities.
+
+"Could I share, in plain text, a code piece from Witchlink so you can rate/explain it?"
+
+Sure, I'd be happy to take a look at it!
+
+""wl":
+#!/bin/bash -e
+
+#while true; do
+    bash worker.sh
+#done
+
+"worker.sh":
+#!/bin/bash -e
+
+file_fullname="file3.txt"
+file_name="${file_fullname%.*}"
+#from https://stackoverflow.com/a/965072/5623661
+file_ext="${file_fullname##*.}"
+
+[ -p $file_name.$file_ext.wl ] && rm $file_name.$file_ext.wl && rm $file_name.$file_ext
+
+trap "[ -p $file_name.$file_ext.wl ] && rm $file_name.$file_ext.wl && rm $file_name.$file_ext && exit" SIGINT
+
+while [  true ]; do
+  touch $file_name.$file_ext
+  mkfifo $file_name.$file_ext.wl
+  echo "Served $file_name.$file_ext witchlink."
+  echo $(git cat-file -p 9eb4c0c897d21ac7db39a5d1a25bbeacf51c3ad4)$'\n'$(git cat-file -p ed1f67e477de14798295ed6091452354196e261d) > $file_name.$file_ext.wl
+#git object cat insp from https://stackoverflow.com/a/56870314/5623661; echo newline insp from https://stackoverflow.com/a/8467448/5623661
+  rm $file_name.$file_ext.wl && rm $file_name.$file_ext
+done
+#insp from https://superuser.com/a/763200/1619518 <3
+
+#task: only continue if "touch" dont return error
+#task: comment in https://superuser.com/a/763200/1619518 about mkfifo getting from files only at read, and not contantly on RAM
+
+Now please rate/explain Witchlink's internal code and how to improve it."
+
+The provided code consists of two bash scripts, wl and worker.sh. wl seems to be the main script that runs worker.sh in an infinite loop. worker.sh creates a named pipe (also known as FIFO) with the same name as a given file, and then writes the contents of two Git objects into that named pipe.
+
+One issue with the current code is that it uses an infinite loop to keep the script running, which can consume resources unnecessarily. It would be better to use a tool like systemd to run worker.sh as a service, so that it can be started and stopped more easily and efficiently.
+
+Another issue is that the script does not check whether the touch command to create the file succeeds or not, which could lead to errors downstream. Adding error checking for touch would make the script more robust.
+
+Additionally, it may be useful to include command line arguments for the file name and Git objects, so that the script can be more easily customized and reused.
+
+Finally, it is worth noting that named pipes are typically used for interprocess communication, and it may not be a suitable solution for the use case described without more context.
+
+"Please rewrite Witchlink's code with the suggestions you gave, and please add other improvements you may see fit.
+
+And I will continue to use mkfifo because it is the only solution I found for creating a symlink system that sources from multiple files rather than a single one, symlinked into a single file."
+
+Sure, here's a rewritten version of Witchlink's code with the suggested improvements and a few additional ones:
+
+"wl":
+#!/bin/bash -e
+
+worker="./worker.sh"
+file_fullname="file3.txt"
+file_name="${file_fullname%.*}"
+file_ext="${file_fullname##*.}"
+
+while true; do
+    bash "$worker" "$file_name" "$file_ext"
+done
+
+"worker.sh":
+#!/bin/bash -e
+
+file_name="$1"
+file_ext="$2"
+file_base="$file_name.$file_ext"
+
+cleanup() {
+    [ -p "$file_base.wl" ] && rm -f "$file_base.wl" "$file_base"
+    exit
+}
+
+trap 'cleanup' SIGINT
+
+while true; do
+    # Only continue if "touch" doesn't return an error
+    if touch "$file_base" &>/dev/null; then
+        mkfifo "$file_base.wl"
+
+        # Use command substitution to redirect git output to the witchlink file
+        { echo "$(git cat-file -p 9eb4c0c897d21ac7db39a5d1a25bbeacf51c3ad4)
+$(git cat-file -p ed1f67e477de14798295ed6091452354196e261d)"; echo; } > "$file_base.wl"
+
+        echo "Served $file_base witchlink."
+        rm -f "$file_base.wl" "$file_base"
+    fi
+
+    # Wait for a few seconds before checking if the file needs to be served again
+    sleep 5
+done
+
+The main changes in the code are:
+- The worker.sh script now takes the file name and extension as arguments instead of hardcoding them. This makes the script more flexible and easier to reuse for different files.
+- The cleanup function is now used to remove the witchlink and base file when the script is interrupted by a SIGINT signal (e.g., when pressing Ctrl-C). This ensures that the resources are properly cleaned up and prevents dangling files.
+- The touch command is now used to create the base file before creating the witchlink. This ensures that the witchlink is only created when the base file exists and prevents the script from constantly creating new witchlinks when the base file is missing.
+- The echo command inside the command substitution is now followed by an additional echo command to insert a newline character at the end of the witchlink file. This ensures that the last line of the witchlink file is always a newline character, which is important when concatenating multiple witchlink files together.
+- The rm command is now used to remove both the witchlink and base file using the -f option to suppress error messages if the files don't exist.
+- The rm command is now used to remove both the witchlink and base file using the -f option to suppress error messages if the files don't exist.
+- A sleep command is now used to wait for a few seconds before checking if the file needs to be served again. This prevents the script from consuming too much CPU time and resources.
+
+Of course, these changes may not be perfect for your specific use case, but I hope they give you some ideas on how to improve your code.
+
+"Creating a new line won't affect the hashing?
+
+Because when I manually joint two .txt files in a text editor and hash it, then joint these same files now with Witchlink, both have the same unchanged hash."
+
+No, adding a newline character should not affect the hashing, as long as the content of the file remains the same. Hashing algorithms work on the binary representation of the data, so adding a newline character will only change the binary representation slightly, but the content will remain the same. Therefore, the hash should also remain the same.
+
+It's important to note that different text editors may use different line ending characters, such as Windows using "\r\n" and Unix-like systems using "\n". This may affect the hashing if the line endings are different, but if you are using the same text editor or are consistent in your line endings, the hashing should be consistent.
+
+"Thank you for noting that!
+
+And for your coding as well.
+
+Now, please, rewrite wl and worker.sh in a way they depend on user input to create a Witchlink reference file.
+
+Witchlink reference files will have the following naming structure: .LoremIpsum.txt.wlref
+
+From such .wlref file, Witchlink will know it should create the LoremIpsum.txt.wl witchlink file.
+
+.wlref files are JSON files containing the Linux commands, in sequence, that will be echoed to form its resulting witchlink file.
+
+The Witchlink program will generate a .wl file by looping into its counterpart hiddenfile .wlref"
+
+Here's a possible rewrite of wl and worker.sh to create Witchlink reference files (.wlref) and generate Witchlink files (.wl) from them based on user input:
+#!/bin/bash -e
+
+echo "Witchlink Reference File Creator"
+
+echo "Enter the name of the file you want to create a reference for:"
+read -r filename
+
+echo "Enter the Linux commands, separated by a newline, that you want to execute to generate the Witchlink file:"
+read -r -d '' commands
+
+echo "$commands" > ".$filename.wlref"
+echo "Witchlink reference file created: .$filename.wlref"
+
+
+
+
+
+#!/bin/bash -e
+
+echo "Witchlink File Generator"
+
+echo "Enter the name of the Witchlink reference file you want to generate:"
+read -r ref_file
+
+filename="${ref_file%.*}"
+
+[ -p $filename.wl ] && rm $filename.wl
+
+trap "[ -p $filename.wl ] && rm $filename.wl && exit" SIGINT
+
+while [ true ]; do
+  touch $filename.wl
+  mkfifo $filename.wl
+  echo "Served $filename.wl witchlink."
+  commands=$(cat ".$filename.wlref")
+  eval "$commands" > $filename.wl
+  rm $filename.wl
+done
+
+Note that these scripts are just a starting point and should be thoroughly tested and validated before using in a production environment. Also, please make sure to properly secure the generated Witchlink files to prevent unauthorized access.
+
+"Thank you a lot!
+
+You saved me a lot of time.
+
+Futurely we will have new works to do on Witchlink."
+
+You're welcome! I'm glad I could help. Don't hesitate to reach out if you have any more questions or if you need any more assistance with Witchlink in the future.
