@@ -2,6 +2,7 @@ Witchlink r1 completed
 [x] Replace hardcoded output/source with CLI accepting arbitrary output paths and multiple source files.
 [x] Use a JSON .wlref manifest paired with the output file.
 [x] Stream source bytes exactly, without command substitution, echo, or implicit separators.
+[x] Support Git blob segments through git cat-file.
 [x] Support relative references for sources stored beside the manifest.
 [x] Keep the FIFO node present instead of deleting/recreating it after each read.
 [x] Serve repeated readers sequentially and recover after a reader disconnects.
