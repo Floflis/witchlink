@@ -111,6 +111,9 @@ cmd_serve(){
   if ! stream_manifest "$m" > "$fifo"; then
    (( stopping )) && break
    log 'stream failed (possibly a disconnected reader); retrying'; sleep 1
+  else
+   # Let the current reader observe EOF and close before opening the next stream.
+   sleep 0.1
   fi
  done
  log 'server stopped; FIFO retained'
