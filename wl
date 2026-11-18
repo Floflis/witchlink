@@ -132,7 +132,7 @@ cmd_install(){
  bindir="$HOME/.local/bin"; unitdir="$HOME/.config/systemd/user"
  mkdir -p -- "$bindir" "$unitdir"
  self=$(readlink -f -- "\${BASH_SOURCE[0]}")
- install -m 0755 -- "$self" "$bindir/wl"
+ if [[ $self != "$bindir/wl" ]]; then install -m 0755 -- "$self" "$bindir/wl"; fi
  cat > "$unitdir/witchlink@.service" <<'UNIT'
 [Unit]
 Description=Witchlink FIFO server for %f
