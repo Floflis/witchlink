@@ -1,7 +1,20 @@
-"ln" wrapper. watch for symlink's src for moving, then when triggered update symlink's src (also watch the symlink). or better: when creating a symlink in a folder, place in the original file its symlinkers, so symlinkers can be updated when this original file is moved
+Witchlink r1 completed
+[x] Replace hardcoded output/source with CLI accepting arbitrary output paths and multiple source files.
+[x] Use a JSON .wlref manifest paired with the output file.
+[x] Stream source bytes exactly, without command substitution, echo, or implicit separators.
+[x] Support relative references for sources stored beside the manifest.
+[x] Keep the FIFO node present instead of deleting/recreating it after each read.
+[x] Serve repeated readers sequentially and recover after a reader disconnects.
+[x] Add per-user systemd service management for automatic restart with the user session.
+[x] Add create, add, render, serve, enable, disable, status, help and version commands.
+[x] Document FIFO limitations, service lifecycle, dependencies and manifest format.
 
-witchlink support symlinking inside files, such as a .svg
+Deferred to r2
+[ ] FUSE backend for seekable file-like behavior and applications that cannot consume FIFOs.
 
-Questions:
-- Are a file being served from RAM? This would be a chaos when serving multiple files
-- How to react when a .wl file is deleted?
+Future ideas
+[ ] Track symlinkers and update references when source files move.
+[ ] Support references embedded inside other files, such as SVG documents.
+[ ] Define behavior when a .wlref manifest is deleted or renamed.
+[ ] Add locking for concurrent manifest edits and snapshot semantics for sources modified mid-stream.
+[ ] Add a portable installer and desktop MIME/icon integration; install-notready.sh remains untouched.
