@@ -6,7 +6,7 @@ Witchlink composes a virtual byte stream from multiple source files and exposes 
 
 - Bash 4.3+
 - jq
-- mkfifo (GNU coreutils or equivalent)
+- mkfifo and base64 (GNU coreutils or equivalent)
 - systemd user session for automatic service management (optional)
 
 ## Quick start
