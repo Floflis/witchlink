@@ -68,7 +68,7 @@ Git blob repo paths are interpreted relative to the service process working dire
 ## FIFO semantics and limitations
 
 - A FIFO is a byte stream, not a seekable regular file. Applications requiring seeking, reliable file size, or random access will not work.
-- Each reader receives a complete stream sequentially. Concurrent readers are not broadcast subscribers; they wait their turn.
+- Each reader receives a complete stream sequentially. The server pauses briefly after EOF so ordinary readers can close before the next stream begins. Concurrent readers are not broadcast subscribers; they wait their turn.
 - A reader closing early can break the writer. The server retries for the next reader; systemd restarts it if it exits.
 - Sources are read when each reader opens the FIFO. Changes between reads appear in later reads; changes during a read may produce a mixed snapshot.
 - The FIFO node persists on disk, but the serving process does not survive reboot. systemd starts it again with the user's session. User lingering enables the user manager without login.
@@ -76,3 +76,7 @@ Git blob repo paths are interpreted relative to the service process working dire
 - The FIFO is created owner-only (mode 0600). Use deliberate permission/ACL changes if cross-user access is required.
 
 FUSE mounting, seekable file semantics and kernel integration are outside r1 and reserved for r2.
+
+## Smoke tests
+
+Run `tests/smoke.sh` to check byte-exact rendering (including NUL bytes), multiple sources, adding sources, Git blob segments, repeated FIFO reads and FIFO-node retention.
